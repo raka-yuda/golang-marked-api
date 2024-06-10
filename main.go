@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"golang-marked-api/controllers"
+	"golang-marked-api/routes"
 	"log"
 	"net/http"
 	"os"
@@ -18,15 +20,15 @@ var (
 	// db     *dbCon.Queries
 	ctx context.Context
 
-	// ContactController controllers.ContactController
-	// ContactRoutes     routes.ContactRoutes
+	ProductController controllers.ProductController
+	ProductRoutes     routes.ProductRoutes
 )
 
 func init() {
 	ctx = context.TODO()
 
-	// ContactController = *controllers.NewContactController(db, ctx)
-	// ContactRoutes = routes.NewRouteContact(ContactController)
+	ProductController = *controllers.NewProductController(ctx)
+	ProductRoutes = routes.NewRouteProduct(ProductController)
 
 	server = gin.Default()
 }
@@ -46,10 +48,10 @@ func main() {
 	router := server.Group("/api")
 
 	router.GET("/health", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"message": "The contact APi is working fine"})
+		ctx.JSON(http.StatusOK, gin.H{"message": "The contact API is working fine"})
 	})
 
-	// ContactRoutes.ContactRoute(router)
+	ProductRoutes.ProductRoute(router)
 
 	server.NoRoute(func(ctx *gin.Context) {
 		ctx.JSON(http.StatusNotFound, gin.H{"status": "failed", "message": fmt.Sprintf("The specified route %s not found", ctx.Request.URL)})
